@@ -13,18 +13,12 @@ const openai = new OpenAI({
 });
 
 const createThread = async (req, res) => {
-  // Check subscription status
-  // if (!req.subscription) {
-  //   const createdAt = new Date(req.user.created_at);
-  //   const trialEndDate = createdAt.getTime() + 7 * 24 * 60 * 60 * 1000;
-  //   if (Date.now() > trialEndDate) {
-  //     return res
-  //       .status(403)
-  //       .json({
-  //         error: "Your trial has expired, please activate a subscription",
-  //       });
-  //   }
-  // }
+  // Check subscription status - require active subscription
+  if (!req.subscription) {
+    return res.status(403).json({
+      error: "Active subscription required. Please subscribe to continue.",
+    });
+  }
 
   const { thread_name } = req.body;
   try {
@@ -47,15 +41,11 @@ const createThread = async (req, res) => {
 };
 
 const sendMessage = async (req, res) => {
-  // Check subscription status
+  // Check subscription status - require active subscription
   if (!req.subscription) {
-    const createdAt = new Date(req.user.created_at);
-    const trialEndDate = createdAt.getTime() + 7 * 24 * 60 * 60 * 1000;
-    if (Date.now() > trialEndDate) {
-      return res.status(403).json({
-        error: "Your trial has expired, please activate a subscription",
-      });
-    }
+    return res.status(403).json({
+      error: "Active subscription required. Please subscribe to continue.",
+    });
   }
 
   const { thread_id, role = "user", content } = req.body;
@@ -73,15 +63,11 @@ const sendMessage = async (req, res) => {
 };
 
 const streamResponse = async (req, res) => {
-  // Check subscription status
+  // Check subscription status - require active subscription
   if (!req.subscription) {
-    const createdAt = new Date(req.user.created_at);
-    const trialEndDate = createdAt.getTime() + 7 * 24 * 60 * 60 * 1000;
-    if (Date.now() > trialEndDate) {
-      return res.status(403).json({
-        error: "Your trial has expired, please activate a subscription",
-      });
-    }
+    return res.status(403).json({
+      error: "Active subscription required. Please subscribe to continue.",
+    });
   }
 
   const thread_id = req.query.thread_id;
