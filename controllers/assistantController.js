@@ -67,5 +67,4 @@ Always be friendly, encouraging, and help users feel confident in their fashion 
 module.exports = {
   createAssistant,
   listAssistants,
-  updateAssistant,
 };
