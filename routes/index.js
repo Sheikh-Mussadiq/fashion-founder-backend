@@ -10,6 +10,7 @@ const {
 const {
   createAssistant,
   listAssistants,
+  updateAssistant,
 } = require("../controllers/assistantController");
 
 // Auth routes
@@ -23,5 +24,6 @@ router.get("/api/stream", authMiddleware, streamResponse);
 // Assistant routes
 router.post("/api/createassistant", authMiddleware, createAssistant);
 router.get("/api/listassistants", listAssistants);
+router.put("/api/updateassistant", authMiddleware, updateAssistant);
 
 module.exports = router;

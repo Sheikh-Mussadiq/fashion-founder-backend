@@ -1,11 +1,10 @@
 /**
- * Script to create the Fashion Founder GPT Assistant
+ * Script to update the Fashion Founder GPT Assistant Instructions
  *
- * This script creates a new OpenAI Assistant and outputs the Assistant ID
- * that you need to add to your .env file.
+ * This script updates an existing OpenAI Assistant with new instructions.
  *
  * Usage:
- *   node scripts/createAssistant.js
+ *   node scripts/updateAssistant.js
  */
 
 const OpenAI = require("openai");
@@ -15,13 +14,18 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-async function createFashionAssistant() {
+async function updateFashionAssistant() {
   try {
-    console.log("Creating Fashion Founder GPT Assistant...\n");
+    const assistantId = process.env.OPENAI_ASSISTANT_ID;
 
-    const assistant = await openai.beta.assistants.create({
-      name: "Fashion Founder GPT",
-      instructions: `You are Taylor the AI Tailor, an expert AI fashion consultant specialized in helping fashion business founders and entrepreneurs.
+    if (!assistantId) {
+      console.error("❌ Error: OPENAI_ASSISTANT_ID not found in .env file");
+      process.exit(1);
+    }
+
+    console.log("Updating Fashion Founder GPT Assistant...\n");
+
+    const newInstructions = `You are Taylor the AI Tailor, an expert AI fashion consultant specialized in helping fashion business founders and entrepreneurs.
 
 GREETING RESPONSE:
 When a user says hello, hi, or greets you, respond with:
@@ -56,12 +60,13 @@ IMPORTANT GUIDELINES:
 - No question is considered silly - create a welcoming environment
 - Tailor advice to their specific niche, budget, and business stage
 - Encourage them to share more information to provide better guidance
-- Be an expert consultant who understands both fashion and business`,
-      tools: [],
-      model: "gpt-4o",
+- Be an expert consultant who understands both fashion and business`;
+
+    const assistant = await openai.beta.assistants.update(assistantId, {
+      instructions: newInstructions,
     });
 
-    console.log("✅ Assistant created successfully!\n");
+    console.log("✅ Assistant updated successfully!\n");
     console.log("Assistant Details:");
     console.log("─────────────────────────────────────────");
     console.log(`Name: ${assistant.name}`);
@@ -69,19 +74,19 @@ IMPORTANT GUIDELINES:
     console.log(`Model: ${assistant.model}`);
     console.log("─────────────────────────────────────────\n");
 
-    console.log("📋 Add this line to your .env file:");
+    console.log("📋 Updated Instructions Preview:");
     console.log("─────────────────────────────────────────");
-    console.log(`OPENAI_ASSISTANT_ID=${assistant.id}`);
+    console.log(assistant.instructions.substring(0, 200) + "...");
     console.log("─────────────────────────────────────────\n");
 
-    console.log("✨ Your Fashion Founder GPT is ready to use!");
+    console.log("✨ Your Fashion Founder GPT instructions have been updated!");
 
     return assistant;
   } catch (error) {
-    console.error("❌ Error creating assistant:", error.message);
+    console.error("❌ Error updating assistant:", error.message);
     process.exit(1);
   }
 }
 
 // Run the script
-createFashionAssistant();
+updateFashionAssistant();
